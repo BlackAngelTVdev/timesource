@@ -1,0 +1,29 @@
+# Lancement du service avec Docker Compose :
+#   docker compose up --build -d
+#   docker compose logs -f
+#   docker compose down
+#
+# Les valeurs viennent du fichier .env (utilisateur, mot de passe, topic, NTP).
+# Les valeurs de repli ci-dessous ne servent que si .env est absent.
+services:
+  ntp-mqtt-clock:
+    build: .
+    image: ntp-mqtt-clock:latest
+    container_name: ntp-mqtt-clock
+    # Redemarre automatiquement (au boot de l'hote et apres un crash).
+    restart: unless-stopped
+    # Laisse 5 s au programme pour sortir proprement sur SIGTERM.
+    stop_grace_period: 5s
+    environment:
+      MQTT_HOST: ${MQTT_HOST:-mqqt.blue.section-inf.ch}
+      MQTT_PORT: ${MQTT_PORT:-1883}
+      MQTT_USERNAME: ${MQTT_USERNAME:-ict}
+      MQTT_PASSWORD: ${MQTT_PASSWORD:-321}
+      MQTT_TOPIC: ${MQTT_TOPIC:-umddcmid3b/dg/time}
+      MQTT_CLIENT_ID: ${MQTT_CLIENT_ID:-umddcmid3b-dg-time}
+      # Serveur NTP de reference et periode de resynchronisation (minutes).
+      NTP_SERVER: ${NTP_SERVER:-pool.ntp.org}
+      NTP_SYNC_INTERVAL_MIN: ${NTP_SYNC_INTERVAL_MIN:-20}
+      NTP_TIMEOUT_MS: ${NTP_TIMEOUT_MS:-3000}
+      # Une publication par seconde.
+      PUBLISH_INTERVAL_MS: ${PUBLISH_INTERVAL_MS:-1000}
