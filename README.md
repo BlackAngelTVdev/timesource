@@ -32,6 +32,7 @@ Image : `ghcr.io/blackangeltvdev/timesource:latest`
 | `src/log.h` | Journalisation horodatee (`INFO`, `AVERT`, `ERREUR`) |
 | `CMakeLists.txt` | Build C++17 |
 | `.env` | Identifiants, topic MQTT et serveur NTP (non versionne) |
+| `.env.example` | Modele de configuration versionne, a copier en `.env` |
 | `run-local.sh` | Compilation + lancement en local, sans Docker |
 | `Dockerfile` | Image multi-etapes, execution non privilegiee |
 | `docker-compose.yml` | Service pret, alimente par `.env` |
@@ -58,6 +59,15 @@ NTP_SYNC_INTERVAL_MIN=20
 NTP_TIMEOUT_MS=3000
 PUBLISH_INTERVAL_MS=1000
 ```
+
+Pour partir du modele versionne :
+
+```bash
+cp .env.example .env
+```
+
+`.env.example` contient exactement les memes cles, renseignees avec les valeurs par defaut du
+code ; seul `.env` est ignore par Git.
 
 - `docker compose` lit `.env` automatiquement.
 - `./run-local.sh` charge `.env` au demarrage (commentaires et lignes vides ignores).
