@@ -3,6 +3,9 @@
 Service C++ qui publie l'heure courante en JSON sur un broker MQTT, une fois par seconde,
 en se resynchronisant sur un serveur NTP de reference toutes les 20 minutes.
 
+Depot : <https://github.com/BlackAngelTVdev/timesource>
+Image : `ghcr.io/blackangeltvdev/timesource:latest`
+
 ```json
 {"UnixTimeStamp":1794218169}
 ```
@@ -32,6 +35,7 @@ en se resynchronisant sur un serveur NTP de reference toutes les 20 minutes.
 | `run-local.sh` | Compilation + lancement en local, sans Docker |
 | `Dockerfile` | Image multi-etapes, execution non privilegiee |
 | `docker-compose.yml` | Service pret, alimente par `.env` |
+| `.github/workflows/image.yml` | CI : construit et publie l'image sur ghcr.io |
 | `README.md` | Cette documentation |
 
 Le code source est commente en francais.
@@ -136,6 +140,21 @@ Comme le conteneur n'ecrit sur aucun volume, n'ouvre aucun port et n'utilise que
 sortant, il n'y a ni option `:Z` ni `--network` a ajouter. Si `podman-compose` n'est pas
 installe : `pip install --user podman-compose` (ou `podman compose` avec le paquet
 `docker-compose`).
+
+## Image preconstruite
+
+L'image est construite et publiee sur GitHub Container Registry a chaque push sur `main`
+(voir `.github/workflows/image.yml`) :
+
+```bash
+podman pull ghcr.io/blackangeltvdev/timesource:latest
+podman run -d --name ntp-mqtt-clock --restart=unless-stopped --env-file .env \
+  ghcr.io/blackangeltvdev/timesource:latest
+docker pull ghcr.io/blackangeltvdev/timesource:latest   # equivalent avec Docker
+```
+
+Etiquettes disponibles : `latest` et le sha complet du commit. Le package est public (il est
+rattache au depot public par la CI), donc aucune authentification n'est necessaire pour le tirer.
 
 ## Verifier ce qui arrive sur le broker
 
